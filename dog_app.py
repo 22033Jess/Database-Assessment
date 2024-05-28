@@ -12,14 +12,14 @@ def print_all_dogbreeds():
     By Jess Williams on 20/05/24'''
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT breed_id, breed_name FROM dog_breeds;"
+    sql = "SELECT breed_name FROM dog_breeds;"
     cursor.execute(sql)
     results = cursor.fetchall()
     
-    print("\nBreed id  Name")
+    print("\nBreed Name")
     #loop through all of the results
     for breed in results:
-        print(f"{breed[0]:<9} {breed[1]:<5}")
+        print(f"{breed[0]:<9}")
     db.close()
 
 def print_all_data():
@@ -27,13 +27,13 @@ def print_all_data():
     By Jess Williams on 21/05/24'''
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT dog_breeds.breed_id, dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id;"
+    sql = "SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id;"
     cursor.execute(sql)
     results = cursor.fetchall()
-    print("\nBreed id Name                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
+    print("\nName                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
     #loop through all of the results
     for breed in results:
-        print(f"{breed[0]:<8} {breed[1]:<25} {breed[2]:<8} {breed[3]:<15} {breed[4]:<10} {breed[5]:<9} {breed[6]:<9} {breed[7]:<15}")
+        print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}")
     db.close()
 
 def print_dog_walkies():
@@ -51,7 +51,7 @@ def print_dog_walkies():
         print(f"{breed[0]:<23} {breed[1]:<5}")
 
 def print_sheddness():
-    '''print the walk durations for all dog breeds
+    '''print dogs that have the level of shedness 
     By Jess Williams on 26/05/24'''
 
     #find out what level of shedness the user wants
@@ -72,7 +72,62 @@ def print_sheddness():
         print(f"{breed[0]:<23} {breed[1]:<5}")
 
 def print_sized_dogs():
-    ''''''
+    '''print dogs that are the size the user wants
+    By Jess Williams on 28/05/2024'''
+
+    shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant")
+    while shed_amount not in ('1', '2', '3','4'):
+        print("please enter 1, 2, 3, or 4\n")
+        shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant")
+
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = ""
+    cursor.execute(sql)
+    results = cursor.fetchall()
+   
+    print("\nName                    Size")
+    #loop thorugh all of the results
+    for breed in results:
+        print(f"{breed[0]:<23} {breed[1]:<5}")
+
+def all_about_one_dog():
+    '''display all possible information about selected dog
+    By Jess Williams on 28/05/2024'''
+    
+    
+    while True:
+        decision = input("\nWould you like to:\n1 look at a list of possible dogs to select from\n2 Select the dog you want information about\n")
+        if decision == '1':
+            decision = "0"
+            print_all_dogbreeds()
+        elif decision == '2':
+            break
+        else:
+            print("please enter 1 or 2")
+
+    while True:
+        selected_dog = input("\nPlease enter the full name of the dog you want information about\n")
+
+        #try and input the selected dog into the query and print the results
+        
+        db = sqlite3.connect(DATABASE)
+        cursor = db.cursor()
+        sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_name == '{selected_dog}';"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        if not results:
+            print("\nplease enter a valid dog")
+            continue
+        #output results nicely
+        print("\nName                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
+        #loop through all of the results
+        for breed in results:
+            print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}\n")
+        db.close()
+        break
+
+
 
 def print_own_query():
     db = sqlite3.connect(DATABASE)
@@ -84,22 +139,51 @@ def print_own_query():
     
 #main code
 while True:
-    user_input = input("\nWhat would you like to do? \n1 List of all the Dog Breeds\n2 Print everything in the database\n3 List the walk needs for each dog breed\n4 List dog breeds based on shedding\n7 Exit the program\n")
+    user_input = input("""
+What would you like to do? 
+    1 List of all the Dog Breeds
+    2 Display everything in the database
+    3 List the walk needs for each dog breed
+    4 List dog breeds that shed a certian amount
+    5 List dogs of a specifc size
+    7 Exit the program
+""")
     if user_input == "1":
         print_all_dogbreeds()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "2":
         print_all_data()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "3":
         print_dog_walkies()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "4":
         print_sheddness()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "5":
-        print_
+        print_sized_dogs()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "6":
-        print_
+        all_about_one_dog()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "7":
         break
     elif user_input == "secret duck":
         print_own_query()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     else:
         print("\nThat was not an option")
