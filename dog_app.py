@@ -22,6 +22,20 @@ def print_all_dogbreeds():
         print(f"{breed[0]:<9}")
     db.close()
 
+def print_all_dogbreeds2():
+    '''print a list of all the dog breeds
+    By Jess Williams on 20/05/24'''
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT breed_id, breed_name FROM dog_breeds;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    
+    print("\nBreed ID Breed Name")
+    #loop through all of the results
+    for breed in results:
+        print(f"{breed[0]:<9} {breed[1]}")
+    db.close()
 def print_all_data():
     '''print all data about the dog breeds in the database
     By Jess Williams on 21/05/24'''
@@ -100,20 +114,21 @@ def all_about_one_dog():
         decision = input("\nWould you like to:\n1 look at a list of possible dogs to select from\n2 Select the dog you want information about\n")
         if decision == '1':
             decision = "0"
-            print_all_dogbreeds()
+            print_all_dogbreeds2()
+            break
         elif decision == '2':
             break
         else:
             print("please enter 1 or 2")
 
     while True:
-        selected_dog = input("\nPlease enter the full name of the dog you want information about\n")
+        selected_dog = input("\nPlease enter the id for the dog you want information about\n")
 
         #try and input the selected dog into the query and print the results
         
         db = sqlite3.connect(DATABASE)
         cursor = db.cursor()
-        sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_name == '{selected_dog}';"
+        sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_id == {selected_dog};"
         cursor.execute(sql)
         results = cursor.fetchall()
         if not results:
@@ -127,7 +142,8 @@ def all_about_one_dog():
         db.close()
         break
 
-
+def add_a_dog():
+    '''this is a simple function to add a new dog into the database'''
 
 def print_own_query():
     db = sqlite3.connect(DATABASE)
@@ -146,6 +162,7 @@ What would you like to do?
     3 List the walk needs for each dog breed
     4 List dog breeds that shed a certian amount
     5 List dogs of a specifc size
+    6 Show all infomation about 1 dog
     7 Exit the program
 """)
     if user_input == "1":
