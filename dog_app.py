@@ -23,8 +23,8 @@ def print_all_dogbreeds():
     db.close()
 
 def print_all_dogbreeds2():
-    '''print a list of all the dog breeds
-    By Jess Williams on 20/05/24'''
+    '''print a list of all the dog breeds with their id for all_about_one_dog function
+    By Jess Williams on 30/05/24'''
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT breed_id, breed_name FROM dog_breeds;"
@@ -36,6 +36,7 @@ def print_all_dogbreeds2():
     for breed in results:
         print(f"{breed[0]:<9} {breed[1]}")
     db.close()
+
 def print_all_data():
     '''print all data about the dog breeds in the database
     By Jess Williams on 21/05/24'''
@@ -109,7 +110,7 @@ def all_about_one_dog():
     '''display all possible information about selected dog
     By Jess Williams on 28/05/2024'''
     
-    
+    # ask the user if they need a 
     while True:
         decision = input("\nWould you like to:\n1 look at a list of possible dogs to select from\n2 Select the dog you want information about\n")
         if decision == '1':
@@ -122,6 +123,7 @@ def all_about_one_dog():
             print("please enter 1 or 2")
 
     while True:
+
         selected_dog = input("\nPlease enter the id for the dog you want information about\n")
 
         #try and input the selected dog into the query and print the results
@@ -131,6 +133,8 @@ def all_about_one_dog():
         sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_id == {selected_dog};"
         cursor.execute(sql)
         results = cursor.fetchall()
+
+        # if no results are returned (what was entered was not an option)
         if not results:
             print("\nplease enter a valid dog")
             continue
@@ -142,8 +146,14 @@ def all_about_one_dog():
         db.close()
         break
 
+def print_dog_energy():
+    '''this is a simple function '''
+    print("there is nothing here yet sorry")
+
 def add_a_dog():
-    '''this is a simple function to add a new dog into the database'''
+    '''this is a simple function to add a new dog into the database
+    By Jess WIlliams on 30/05/24'''
+    print("there is nothing here yet sorry")
 
 def print_own_query():
     db = sqlite3.connect(DATABASE)
@@ -162,8 +172,11 @@ What would you like to do?
     3 List the walk needs for each dog breed
     4 List dog breeds that shed a certian amount
     5 List dogs of a specifc size
-    6 Show all infomation about 1 dog
-    7 Exit the program
+    6 List dogs with a specific amount of energy
+    7 Print all information about one dog
+   
+    9 Exit the program
+    
 """)
     if user_input == "1":
         print_all_dogbreeds()
@@ -191,12 +204,18 @@ What would you like to do?
         if run_program.lower() == 'y':
             break
     elif user_input == "6":
-        all_about_one_dog()
+        print_dog_energy()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
             break
     elif user_input == "7":
+        all_about_one_dog()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
+    elif user_input == "9":
         break
+
     elif user_input == "secret duck":
         print_own_query()
         run_program = input("Would you like to exit the program?\ny or n\n")
