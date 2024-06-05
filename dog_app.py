@@ -81,10 +81,10 @@ def print_sheddness():
     cursor.execute(sql)
     results = cursor.fetchall()
    
-    print("\nName                    Shedness out of 3")
+    print("\nName")
     #loop thorugh all of the results
     for breed in results:
-        print(f"{breed[0]:<23} {breed[1]:<5}")
+        print(f"{breed[0]:<23}")
 
 def print_sized_dogs():
     '''print dogs that are the size the user wants
@@ -101,10 +101,10 @@ def print_sized_dogs():
     cursor.execute(sql)
     results = cursor.fetchall()
    
-    print("\nName                    Size")
+    print("\nName")
     #loop thorugh all of the results
     for breed in results:
-        print(f"{breed[0]:<23} {breed[1]:<5}")
+        print(f"{breed[0]:<23}")
 
 def all_about_one_dog():
     '''display all possible information about selected dog
@@ -169,23 +169,80 @@ def print_dog_energy():
 def add_a_dog():
     '''this is a simple function to add a new dog into the database
     By Jess WIlliams on 30/05/24'''
-    # get all the values for the new dog
-    id = 21
-    name = input("Please enter the name of the dog you would like to add?\n")
 
-
-    #connect the database and 
+    #connect the database and cursor
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = f"INSERT INTO dogs (breed_id, breed_name, energy, walkies_id, Size_id, barkness, Shedding, cost) VALUES ({id}, '{name}', {energy_value}, {walk}, {size}, {bark}, {fur}, '{money}');"
-    sql2 = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_name == {name};"
+   
+    # get all the values for the new dog
+
+    #id
+    max_sql = f"SELECT MAX(breed_id) FROM dog_breeds"
+    cursor.execute(max_sql)
+    results = cursor.fetchall() 
+    for breed in results:
+        result = (f"{breed[0]:<23}")
+    id = int(result)+1
+    
+    #name
+    name = input("Please enter the name of the dog you would like to add?\n")
+    #energy
+    while True:
+        energy_value = input("How much energy does this dog have?\n1 Low Enegy\n2 Medium Energy\n3 High Energy\n")
+        if energy_value in ('1','2','3'):
+            int(energy_value)
+            break
+        else:
+            print("\nplease enter 1, 2, or 3\n")
+    #walkies
+    while True:
+        walk = input("How long does this dog need to be walked each day?\n1 30 minutes\n2 45 minutes\n3 1 hour\n4 1-2 hours\n5 2 hours +\n")
+        if walk in ('1','2','3','4','5'):
+            int(walk)
+            break
+        else:
+            print("\nplease enter 1, 2, 3, 4, or 5\n")
+    #size
+    while True:
+        size = input("What is the size of this dog?\n1 Small\n2 Medium\n3 Large\n4 Giant\n")
+        if size in ('1','2','3','4'):
+            int(size)
+            break
+        else:
+            print("\nplease enter 1, 2, 3, or 4\n")
+    #barkness
+    while True:
+        bark = input("How much does this dog bark?\n1 A little\n2 A Medium Amount\n3 A lot\n")
+        if bark in ('1','2','3'):
+            int(bark)
+            break
+        else:
+            print("\nplease enter 1, 2, or 3\n")
+    #shedness
+    while True:
+        fur = input("How much does this dog shed?\n1 A little\n2 A Medium Amount\n3 A lot\n")
+        if fur in ('1','2','3'):
+            int(fur)
+            break
+        else:
+            print("\nplease enter 1, 2, or 3\n")
+    #cost
+    money = input("What is the cost range?\n")
+
+    sql = f"INSERT INTO dog_breeds (breed_id, breed_name, energy, walkies_id, Size_id, barkness, Shedding, cost) VALUES ({id}, '{name}', {energy_value}, {walk}, {size}, {bark}, {fur}, '{money}');"
+    cursor.execute(sql)
+    sql2 = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_name == '{name}';"
     cursor.execute(sql2)
     results = cursor.fetchall()
    
-    print("\nHere is the dog you entered into the database")
+    print("\nHere is the data for the dog you entered")
     #loop thorugh all of the results
     for breed in results:
         print(f"{breed[0]:<23}")
+    commit = input("Would you like to save this to the database? Y or N\n")
+    if commit.lower == 'y':
+        db.commit()
+    db.close()
 
 
 
@@ -209,7 +266,7 @@ while True:
     5 List dogs of a specifc size
     6 List dogs with a specific amount of energy
     7 Print all information about one dog
-    8 Edit the database
+    8 Add a dog to the database
     9 Exit the program
 """)
     if user_input == "1":
