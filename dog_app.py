@@ -90,14 +90,14 @@ def print_sized_dogs():
     '''print dogs that are the size the user wants
     By Jess Williams on 28/05/2024'''
 
-    shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant")
+    shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant\n")
     while shed_amount not in ('1', '2', '3','4'):
         print("please enter 1, 2, 3, or 4\n")
-        shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant")
+        shed_amount = input("What size dog would you like?\n1 Small \n2 Medium\n3 Large\n4 Giant\n")
 
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = ""
+    sql = f"SELECT dog_breeds.breed_name, bigness.size FROM dog_breeds JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE size_id = {shed_amount},"
     cursor.execute(sql)
     results = cursor.fetchall()
    
@@ -147,13 +147,49 @@ def all_about_one_dog():
         break
 
 def print_dog_energy():
-    '''this is a simple function '''
-    print("there is nothing here yet sorry")
+    '''this is a simple function that will print a set of dogs based on the amount of energy the user wants
+    By Jess Williams on 5/06/24'''
+    energy_amount = input("What energy level would you like?\n1 low energy\n2 medium energy\n3 High energetic\n")
+    while energy_amount not in ('1', '2', '3'):
+        print("\nplease enter 1, 2, or 3\n")
+        energy_amount = input("What energy level would you like?\n1 low energy\n2 medium energy\n3 High energetic\n")
+
+    #connect the database and 
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = f"SELECT breed_name, energy FROM dog_breeds WHERE energy = {energy_amount} "
+    cursor.execute(sql)
+    results = cursor.fetchall()
+   
+    print("\nName ")
+    #loop thorugh all of the results
+    for breed in results:
+        print(f"{breed[0]:<23} ")
 
 def add_a_dog():
     '''this is a simple function to add a new dog into the database
     By Jess WIlliams on 30/05/24'''
-    print("there is nothing here yet sorry")
+    # get all the values for the new dog
+    id = 21
+    name = input("Please enter the name of the dog you would like to add?\n")
+
+
+    #connect the database and 
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = f"INSERT INTO dogs (breed_id, breed_name, energy, walkies_id, Size_id, barkness, Shedding, cost) VALUES ({id}, '{name}', {energy_value}, {walk}, {size}, {bark}, {fur}, '{money}');"
+    sql2 = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_name == {name};"
+    cursor.execute(sql2)
+    results = cursor.fetchall()
+   
+    print("\nHere is the dog you entered into the database")
+    #loop thorugh all of the results
+    for breed in results:
+        print(f"{breed[0]:<23}")
+
+
+
+    
 
 def print_own_query():
     db = sqlite3.connect(DATABASE)
@@ -165,8 +201,7 @@ def print_own_query():
     
 #main code
 while True:
-    user_input = input("""
-What would you like to do? 
+    user_input = input("""What would you like to do? 
     1 List of all the Dog Breeds
     2 Display everything in the database
     3 List the walk needs for each dog breed
@@ -174,9 +209,8 @@ What would you like to do?
     5 List dogs of a specifc size
     6 List dogs with a specific amount of energy
     7 Print all information about one dog
-   
+    8 Edit the database
     9 Exit the program
-    
 """)
     if user_input == "1":
         print_all_dogbreeds()
@@ -213,9 +247,13 @@ What would you like to do?
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
             break
+    elif user_input == "8":
+        add_a_dog()
+        run_program = input("Would you like to exit the program?\ny or n\n")
+        if run_program.lower() == 'y':
+            break
     elif user_input == "9":
         break
-
     elif user_input == "secret duck":
         print_own_query()
         run_program = input("Would you like to exit the program?\ny or n\n")
