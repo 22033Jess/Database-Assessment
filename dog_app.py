@@ -236,17 +236,16 @@ def add_a_dog():
     results = cursor.fetchall()
    
     print("\nHere is the data for the dog you entered")
+    print("Name                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
+    print(results)
     #loop thorugh all of the results
     for breed in results:
-        print(f"{breed[0]:<23}")
-    commit = input("Would you like to save this to the database? Y or N\n")
-    if commit.lower == 'y':
+        print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}\n")
+    
+    save_dog = input("Would you like to save this dog to the database? Y or N\n")
+    if save_dog.lower() == 'y':
         db.commit()
     db.close()
-
-
-
-    
 
 def print_own_query():
     db = sqlite3.connect(DATABASE)
