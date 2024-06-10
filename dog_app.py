@@ -110,7 +110,7 @@ def all_about_one_dog():
     '''display all possible information about selected dog
     By Jess Williams on 28/05/2024'''
     
-    # ask the user if they need a 
+    # ask the user if they need to view the list of dogs to select from
     while True:
         decision = input("\nWould you like to:\n1 look at a list of possible dogs to select from\n2 Select the dog you want information about\n")
         if decision == '1':
@@ -168,9 +168,9 @@ def print_dog_energy():
 
 def add_a_dog():
     '''this is a simple function to add a new dog into the database
-    By Jess WIlliams on 30/05/24'''
+    By Jess WIlliams on 30/05/24 - 6/06/24'''
 
-    #connect the database and cursor
+    # connect the database and cursor
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
    
@@ -247,6 +247,45 @@ def add_a_dog():
         db.commit()
     db.close()
 
+def delete_a_dog():
+    '''delete a dog from the database
+    By Jess Williams on 6/06/2024'''
+    
+    # ask the user if they need a list of dogs to select from
+    while True:
+        decision = input("\nWould you like to:\n1 look at a list of possible dogs to select from\n2 Select the dog you like to delete\n")
+        if decision == '1': 
+            print_all_dogbreeds2()
+            break
+        elif decision == '2':
+            break
+        else:
+            print("please enter 1 or 2")
+
+    while True:
+
+        selected_dog = input("\nPlease enter the id for the dog you would like to delete\n")
+
+        #try and input the selected dog into the query and print the results
+        
+        db = sqlite3.connect(DATABASE)
+        cursor = db.cursor()
+        sql = f"DELETE FROM dog_breeds WHERE breed_id = {selected_dog};"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+
+        # if no results are returned (what was entered was not an option)
+        if not results:
+            print("\nplease enter a valid dog")
+            continue
+    #output results nicely
+    print("\nName                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
+    #loop through all of the results
+    for breed in results:
+        print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}\n")
+    db.close()
+    
+
 def print_own_query():
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -265,7 +304,7 @@ while True:
     5 List dogs of a specifc size
     6 List dogs with a specific amount of energy
     7 Print all information about one dog
-    8 Add a dog to the database
+    8 Edit the database
     9 Exit the program
 """)
     if user_input == "1":
@@ -304,7 +343,17 @@ while True:
         if run_program.lower() == 'y':
             break
     elif user_input == "8":
-        add_a_dog()
+        while True:
+            add_or_delete = input("Would you like to:\n1 Add a dog to the database\n2 Delete a dog from the database\n")
+            if add_or_delete == "1":
+                add_a_dog()
+                break
+            elif add_or_delete == '2':
+                delete_a_dog()
+                break
+            else:
+                print("\nPlease enter 1 or 2\n")
+
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
             break
