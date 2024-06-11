@@ -237,7 +237,6 @@ def add_a_dog():
    
     print("\nHere is the data for the dog you entered")
     print("Name                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
-    print(results)
     #loop thorugh all of the results
     for breed in results:
         print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}\n")
@@ -266,23 +265,35 @@ def delete_a_dog():
 
         selected_dog = input("\nPlease enter the id for the dog you would like to delete\n")
 
-        #try and input the selected dog into the query and print the results
-        
+        #try and input the selected dog into the query and get results
         db = sqlite3.connect(DATABASE)
         cursor = db.cursor()
-        sql = f"DELETE FROM dog_breeds WHERE breed_id = {selected_dog};"
+        sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_id == {selected_dog};"
         cursor.execute(sql)
         results = cursor.fetchall()
-
         # if no results are returned (what was entered was not an option)
         if not results:
             print("\nplease enter a valid dog")
             continue
+        break
     #output results nicely
-    print("\nName                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
+    print("\nHere is the dog you selected")
+    print("Name                      Energy   Walk Duration   Size       Barkness  Shedding  Cost Range")
     #loop through all of the results
     for breed in results:
-        print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}\n")
+        print(f"{breed[0]:<25} {breed[1]:<8} {breed[2]:<15} {breed[3]:<10} {breed[4]:<9} {breed[5]:<9} {breed[6]:<15}")
+    while True:
+        delete = input("\nAre you sure you would like to delete this dog? y or n\n")
+        if delete.lower() == 'y':
+            sql = f"DELETE FROM dog_breeds WHERE breed_id == {selected_dog};"
+            cursor.execute(sql)
+            db.commit()
+            print("\nThis dog has been deleted from the database\n")
+            break
+        elif delete.lower() == 'n':
+            break
+        else:
+            print("\nPlease enter y or n")
     db.close()
     
 
@@ -306,6 +317,7 @@ while True:
     7 Print all information about one dog
     8 Edit the database
     9 Exit the program
+    or enter the password to insert your own sql query
 """)
     if user_input == "1":
         print_all_dogbreeds()
