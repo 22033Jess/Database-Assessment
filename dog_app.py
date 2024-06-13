@@ -1,5 +1,5 @@
 '''This is a simple SQL and Python program that allows users to explore a bunch of different dog breeds to determine which would be best for them
-By Jess Williams on 15/05/24-current'''
+By Jess Williams on 15/05/24-14/06/24'''
 # imports
 import sqlite3
 
@@ -77,7 +77,7 @@ def print_sheddness():
 
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = f"SELECT breed_name, shedding FROM dog_breeds WHERE shedding == {shed_amount} ORDER BY shedding ASC"
+    sql = f"SELECT breed_name, FROM dog_breeds WHERE shedding == {shed_amount} ORDER BY shedding ASC"
     cursor.execute(sql)
     results = cursor.fetchall()
    
@@ -97,7 +97,7 @@ def print_sized_dogs():
 
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = f"SELECT dog_breeds.breed_name, bigness.size FROM dog_breeds JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE size_id = {shed_amount},"
+    sql = f"SELECT dog_breeds.breed_name bigness.size FROM dog_breeds JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE size_id = {shed_amount}"
     cursor.execute(sql)
     results = cursor.fetchall()
    
@@ -124,10 +124,13 @@ def all_about_one_dog():
 
     while True:
 
-        selected_dog = input("\nPlease enter the id for the dog you want information about\n")
+        try:
+            selected_dog = int(input("\nPlease enter the id for the dog you want information about\n"))
+        except ValueError:
+            print("Please enter the dogs id.")
+            continue
 
-        #try and input the selected dog into the query and print the results
-        
+        #try and input the selected dog into the query and print the results        
         db = sqlite3.connect(DATABASE)
         cursor = db.cursor()
         sql = f"SELECT dog_breeds.breed_name, dog_breeds.energy, walkies.duration, bigness.size, dog_breeds.barkness, dog_breeds.shedding, dog_breeds.cost FROM dog_breeds JOIN walkies ON dog_breeds.walkies_id = walkies.walkies_id JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.breed_id == {selected_dog};"
@@ -167,8 +170,7 @@ def print_dog_energy():
         print(f"{breed[0]:<23} ")
 
 def add_a_dog():
-    '''this is a simple function to add a new dog into the database
-    By Jess WIlliams on 30/05/24 - 6/06/24'''
+    '''this is a simple function to add a new dog into the database By Jess WIlliams on 30/05/24 - 6/06/24'''
 
     # connect the database and cursor
     db = sqlite3.connect(DATABASE)
@@ -296,7 +298,6 @@ def delete_a_dog():
             print("\nPlease enter y or n")
     db.close()
     
-
 def print_own_query():
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -308,7 +309,7 @@ def print_own_query():
 #main code
 while True:
     user_input = input("""What would you like to do? 
-    1 List of all the Dog Breeds
+    1 List all dog breeds in the database
     2 Display everything in the database
     3 List the walk needs for each dog breed
     4 List dog breeds that shed a certian amount
@@ -317,42 +318,49 @@ while True:
     7 Print all information about one dog
     8 Edit the database
     9 Exit the program
-    or enter the password to insert your own sql query
+    10 Enter the admin password
 """)
     if user_input == "1":
         print_all_dogbreeds()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "2":
         print_all_data()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "3":
         print_dog_walkies()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "4":
         print_sheddness()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "5":
         print_sized_dogs()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "6":
         print_dog_energy()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "7":
         all_about_one_dog()
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "8":
         while True:
@@ -368,13 +376,20 @@ while True:
 
         run_program = input("Would you like to exit the program?\ny or n\n")
         if run_program.lower() == 'y':
+            print("\nThanks for using my program :)")
             break
     elif user_input == "9":
+        print("\nThanks for using my program :)")
         break
-    elif user_input == "secret duck":
-        print_own_query()
-        run_program = input("Would you like to exit the program?\ny or n\n")
-        if run_program.lower() == 'y':
-            break
+    elif user_input == "10":
+        password = input("What is the Password?")
+        if password == "secret duck":
+            print_own_query()
+            run_program = input("Would you like to exit the program?\ny or n\n")
+            if run_program.lower() == 'y':
+                print("\nThankyou for using my program :)")
+                break
+        else:
+            print("That is not the password.")
     else:
         print("\nThat was not an option")
