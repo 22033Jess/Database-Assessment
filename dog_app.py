@@ -130,7 +130,7 @@ def print_sized_dogs():
     cursor = db.cursor()
 
     #Enter query, Execute query, and get results
-    sql = f"SELECT dog_breeds.breed_name, bigness.size FROM dog_breeds JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE size_id = {shed_amount}"
+    sql = f"SELECT dog_breeds.breed_name, bigness.size FROM dog_breeds JOIN bigness ON dog_breeds.size_id = bigness.size_id WHERE dog_breeds.size_id = {shed_amount}"
     cursor.execute(sql)
     results = cursor.fetchall()
    
@@ -400,7 +400,7 @@ while True:
     7 Print all information about one dog
     8 Edit the database
     9 Exit the program
-    10 Enter the admin password
+    10 Enter Admin
 """)
     if user_input == "1":
         print_all_dogbreeds()
