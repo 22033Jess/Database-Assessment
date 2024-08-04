@@ -395,7 +395,7 @@ while True:
     2 Display everything in the database
     3 List the walk needs for each dog breed
     4 List dog breeds that shed a certian amount
-    5 List dogs of a specifc size
+    5 List dogs of a specific size
     6 List dogs with a specific amount of energy
     7 Print all information about one dog
     8 Edit the database
